@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
-import Slider from '@react-native-community/slider';  // Opdateret import
-import { useNavigation, useRoute } from '@react-navigation/native';//odateret import
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import Slider from '@react-native-community/slider';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
 const CandidateProfileScreen = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    const combinedData = route.params.fullData; // Modtaget data fra SkillsScreen
+    const combinedData = route.params.fullData;
 
     const initialProfileValues = {
         followerOrLeader: 0.5,
@@ -24,18 +26,6 @@ const CandidateProfileScreen = () => {
 
     const [profile, setProfile] = useState(initialProfileValues);
 
-    const updateProfile = (key, value) => {
-        setProfile({ ...profile, [key]: value });
-    };
-
-    const handleNext = () => {
-        const fullData = {
-            ...combinedData,
-            candidateProfile: profile
-        };
-        navigation.navigate('AssignmentDescriptions', { fullData });
-    };
-
     const attributes = {
         followerOrLeader: ['Follower', 'Leader'],
         analyticOrCreative: ['Analytic', 'Creative'],
@@ -51,9 +41,21 @@ const CandidateProfileScreen = () => {
         specialistOrGeneralist: ['Specialist', 'Generalist'],
     };
 
+    const updateProfile = (key, value) => {
+        setProfile({ ...profile, [key]: value });
+    };
+
+    const handleNext = () => {
+        const fullData = {
+            ...combinedData,
+            candidateProfile: profile
+        };
+        navigation.navigate('AssignmentDescriptions', { fullData });
+    };
+
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Candidate Profile</Text>
+            <Text style={styles.header}>Spitzenklasse</Text>
 
             {Object.keys(initialProfileValues).map((key) => (
                 <View key={key} style={styles.sliderContainer}>
@@ -71,8 +73,12 @@ const CandidateProfileScreen = () => {
             ))}
 
             <View style={styles.buttonContainer}>
-                <Button title="Previous" onPress={() => navigation.goBack()} />
-                <Button title="Next" onPress={handleNext} />
+                <TouchableOpacity style={styles.prevButton} onPress={() => navigation.goBack()}>
+                    <Icon name="arrow-back" size={24} color="#FFF" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+                    <Icon name="arrow-forward" size={24} color="#FFF" />
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -81,12 +87,15 @@ const CandidateProfileScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#E8F0FE',
         padding: 20,
     },
     header: {
-        fontSize: 22,
+        fontSize: 24,
         fontWeight: 'bold',
+        color: '#0A84FF',
         marginBottom: 20,
+        textAlign: 'center',
     },
     sliderContainer: {
         flexDirection: 'row',
@@ -95,7 +104,8 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     label: {
-        width: '25%', // Giver plads til labels på hver side af slideren
+        width: '25%',
+        fontSize: 16,
     },
     slider: {
         flex: 1,
@@ -104,6 +114,22 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginTop: 20,
+    },
+    prevButton: {
+        backgroundColor: '#0A84FF',
+        borderRadius: 50,
+        height: 50,
+        width: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    nextButton: {
+        backgroundColor: '#0A84FF',
+        borderRadius: 50,
+        height: 50,
+        width: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
 

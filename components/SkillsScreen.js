@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const SkillsScreen = () => {
     const navigation = useNavigation();
@@ -13,6 +14,7 @@ const SkillsScreen = () => {
     const [selectedSkillIndex, setSelectedSkillIndex] = useState(null);
     const [selectedSkillType, setSelectedSkillType] = useState('');
 
+
     const itSkillsOptions = [
         "JavaScript", "Python", "Java", "C#", "C++",
         "PHP", "Swift", "Ruby", "TypeScript", "Kotlin",
@@ -20,22 +22,15 @@ const SkillsScreen = () => {
         "SQL", "Dart", "Groovy", "Lua", "MATLAB"
         // Tilføj flere færdigheder efter behov
     ];
-
     const handleSelectSkill = (index, type) => {
         setSelectedSkillIndex(index);
         setSelectedSkillType(type);
     };
 
     const updateSkill = (itemValue) => {
-        if (selectedSkillType === 'mustHave') {
-            const updatedSkills = [...mustHaveSkills];
-            updatedSkills[selectedSkillIndex] = itemValue;
-            setMustHaveSkills(updatedSkills);
-        } else {
-            const updatedSkills = [...niceToHaveSkills];
-            updatedSkills[selectedSkillIndex] = itemValue;
-            setNiceToHaveSkills(updatedSkills);
-        }
+        const updatedSkills = selectedSkillType === 'mustHave' ? [...mustHaveSkills] : [...niceToHaveSkills];
+        updatedSkills[selectedSkillIndex] = itemValue;
+        selectedSkillType === 'mustHave' ? setMustHaveSkills(updatedSkills) : setNiceToHaveSkills(updatedSkills);
         setSelectedSkillIndex(null);
         setSelectedSkillType('');
     };
@@ -53,28 +48,25 @@ const SkillsScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Profile Title</Text>
-
+            <Text style={styles.header}>Spitzenklasse</Text>
             <Text style={styles.subHeader}>Must have skills prioritized</Text>
             {mustHaveSkills.map((skill, index) => (
                 <View key={index} style={styles.listItem}>
                     <Text style={styles.itemText}>{index + 1}. {skill || `Skill ${index + 1}`}</Text>
                     <TouchableOpacity style={styles.button} onPress={() => handleSelectSkill(index, 'mustHave')}>
-                        <Text>Select</Text>
+                        <Icon name="keyboard-arrow-down" size={24} color="#FFF" />
                     </TouchableOpacity>
                 </View>
             ))}
-
             <Text style={styles.subHeader}>Nice to have skills</Text>
             {niceToHaveSkills.map((skill, index) => (
                 <View key={index} style={styles.listItem}>
                     <Text style={styles.itemText}>{index + 1}. {skill || `Skill ${index + 1}`}</Text>
                     <TouchableOpacity style={styles.button} onPress={() => handleSelectSkill(index, 'niceToHave')}>
-                        <Text>Select</Text>
+                        <Icon name="keyboard-arrow-down" size={24} color="#FFF" />
                     </TouchableOpacity>
                 </View>
             ))}
-
             {selectedSkillIndex !== null && (
                 <Picker
                     selectedValue={selectedSkillType === 'mustHave' ? mustHaveSkills[selectedSkillIndex] : niceToHaveSkills[selectedSkillIndex]}
@@ -85,10 +77,13 @@ const SkillsScreen = () => {
                     ))}
                 </Picker>
             )}
-
             <View style={styles.buttonContainer}>
-                <Button title="Previous" onPress={() => navigation.goBack()} />
-                <Button title="Next" onPress={handleNext} />
+                <TouchableOpacity style={styles.prevButton} onPress={() => navigation.goBack()}>
+                    <Icon name="arrow-back" size={24} color="#FFF" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+                    <Icon name="arrow-forward" size={24} color="#FFF" />
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -97,17 +92,19 @@ const SkillsScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#E8F0FE',
         padding: 20,
     },
     header: {
-        fontSize: 22,
+        fontSize: 24,
         fontWeight: 'bold',
+        color: '#0A84FF',
         marginBottom: 10,
+        textAlign: 'center',
     },
     subHeader: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginTop: 10,
+        fontSize: 20,
+        color: '#333333',
         marginBottom: 10,
     },
     listItem: {
@@ -116,23 +113,40 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     itemText: {
-        marginRight: 10,
+        flex: 1,
         fontSize: 16,
     },
     button: {
-        marginLeft: 'auto',
-        backgroundColor: '#E5E5E5',
-        padding: 8,
+        backgroundColor: '#0A84FF',
+        padding: 10,
         borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     picker: {
         width: '100%',
         height: 180,
+        backgroundColor: '#FFF',
     },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 20,
+    },
+    prevButton: {
+        backgroundColor: '#0A84FF',
+        borderRadius: 50,
+        height: 50,
+        width: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    nextButton: {
+        backgroundColor: '#0A84FF',
+        borderRadius: 50,
+        height: 50,
+        width: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
 

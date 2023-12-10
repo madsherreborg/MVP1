@@ -12,44 +12,41 @@ const CvListeScreen = () => {
         { company: 'PWC', name: 'Zultan', status: 'Open', contact: 'Contact' },
         { company: 'KMD', name: 'Gabriella', status: 'Open', contact: 'Contact' },
         { company: 'CGI', name: 'George', status: 'Open', contact: 'Contact' },
+        // Tilføj flere konsulenter efter behov
     ];
 
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.header}>CV List</Text>
+            <Text style={styles.header}>Spitzenklasse</Text>
             <View style={styles.table}>
-                {/* Kolonne 1: Companies */}
                 <View style={styles.column}>
                     <Text style={styles.columnHeader}>Companies</Text>
                     {consultants.map((item, index) => (
-                        <Text key={index} style={styles.cell}>{item.company}</Text>
+                        <Text key={`company-${index}`} style={styles.cell}>{item.company}</Text>
                     ))}
                 </View>
 
-                {/* Kolonne 2: Names */}
                 <View style={styles.column}>
                     <Text style={styles.columnHeader}>Names</Text>
                     {consultants.map((item, index) => (
-                        <Text key={index} style={styles.cell}>{item.name}</Text>
+                        <Text key={`name-${index}`} style={styles.cell}>{item.name}</Text>
                     ))}
                 </View>
 
-                {/* Kolonne 3: Open */}
                 <View style={styles.column}>
                     <Text style={styles.columnHeader}>Open</Text>
                     {consultants.map((item, index) => (
-                        <TouchableOpacity key={index} onPress={() => navigation.navigate('CvShow', { consultant: item })}>
-                            <Text style={styles.cell}>{item.status}</Text>
+                        <TouchableOpacity key={`open-${index}`} onPress={() => navigation.navigate('CvShow', { consultant: item })}>
+                            <Text style={styles.cellAction}>{item.status}</Text>
                         </TouchableOpacity>
                     ))}
                 </View>
 
-                {/* Kolonne 4: Contact */}
                 <View style={styles.column}>
                     <Text style={styles.columnHeader}>Contact</Text>
                     {consultants.map((item, index) => (
-                        <TouchableOpacity key={index} onPress={() => navigation.navigate('ContactScreen', { consultant: item })}>
-                            <Text style={styles.cell}>Contact</Text>
+                        <TouchableOpacity key={`contact-${index}`} onPress={() => navigation.navigate('ContactScreen', { consultant: item })}>
+                            <Text style={styles.cellAction}>Contact</Text>
                         </TouchableOpacity>
                     ))}
                 </View>
@@ -61,12 +58,14 @@ const CvListeScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#E8F0FE',
         padding: 20,
     },
     header: {
-        fontSize: 22,
+        fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 20,
+        color: '#0A84FF',
+        marginBottom: 10,
         textAlign: 'center',
     },
     table: {
@@ -80,11 +79,19 @@ const styles = StyleSheet.create({
     },
     columnHeader: {
         fontWeight: 'bold',
+        fontSize: 16,
         marginBottom: 10,
-        fontSize: 14, // Tilpasset for at passe på en linje
+        color: 'black',
     },
     cell: {
         marginBottom: 10,
+        fontSize: 14,
+    },
+    cellAction: {
+        marginBottom: 10,
+        fontSize: 14,
+        color: '#0A84FF',
+        fontWeight: 'bold',
     }
 });
 

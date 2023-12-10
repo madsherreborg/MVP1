@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, ScrollView, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const AssignmentDescriptionsScreen = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    const fullData = route.params.fullData; // Modtaget data fra CandidateProfileScreen
+    const fullData = route.params.fullData;
 
     const [topic, setTopic] = useState('');
     const [description, setDescription] = useState('');
@@ -16,14 +17,13 @@ const AssignmentDescriptionsScreen = () => {
             ...fullData,
             topic,
             description,
-            // Tilføj eventuelle yderligere felter du måtte have
         };
 
         try {
             const db = getFirestore();
             await addDoc(collection(db, 'assignments'), assignmentToSave);
             Alert.alert('Success', 'Assignment saved successfully');
-            navigation.navigate('AssignmentCreated'); // Eller naviger til en anden skærm
+            navigation.navigate('AssignmentCreated');
         } catch (error) {
             console.error('Error saving assignment:', error);
             Alert.alert('Error', 'Error saving assignment');
@@ -32,7 +32,7 @@ const AssignmentDescriptionsScreen = () => {
 
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.header}>Assignment Description</Text>
+            <Text style={styles.header}>Spitzenklasse</Text>
 
             <Text style={styles.label}>Topic:</Text>
             <TextInput
@@ -53,8 +53,12 @@ const AssignmentDescriptionsScreen = () => {
             />
 
             <View style={styles.buttonContainer}>
-                <Button title="Previous" onPress={() => navigation.goBack()} />
-                <Button title="Save Assignment" onPress={saveAssignment} />
+                <TouchableOpacity style={styles.prevButton} onPress={() => navigation.goBack()}>
+                    <Icon name="arrow-back" size={24} color="#FFF" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.nextButton} onPress={saveAssignment}>
+                    <Icon name="save" size={24} color="#FFF" />
+                </TouchableOpacity>
             </View>
         </ScrollView>
     );
@@ -63,15 +67,19 @@ const AssignmentDescriptionsScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#E8F0FE',
         padding: 20,
     },
     header: {
-        fontSize: 22,
+        fontSize: 24,
         fontWeight: 'bold',
+        color: '#0A84FF',
         marginBottom: 20,
+        textAlign: 'center',
     },
     label: {
         fontSize: 16,
+        color: '#0A84FF',
         marginBottom: 5,
     },
     input: {
@@ -79,22 +87,39 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 5,
         borderWidth: 1,
-        borderColor: 'gray',
+        borderColor: '#0A84FF',
         borderRadius: 5,
+        backgroundColor: '#FFF',
     },
     textArea: {
         marginBottom: 15,
         paddingHorizontal: 10,
         paddingVertical: 5,
         borderWidth: 1,
-        borderColor: 'gray',
+        borderColor: '#0A84FF',
         borderRadius: 5,
-        height: 100, // Juster efter behov
+        backgroundColor: '#FFF',
+        height: 100,
     },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 20,
+    },
+    prevButton: {
+        backgroundColor: '#0A84FF',
+        borderRadius: 50,
+        height: 50,
+        width: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    nextButton: {
+        backgroundColor: '#0A84FF',
+        borderRadius: 50,
+        height: 50,
+        width: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
 

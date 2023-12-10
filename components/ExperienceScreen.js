@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, Platform } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const ExperienceScreen = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    const projectData = route.params.projectData; // Modtaget data fra CreateProjectScreen
+    const projectData = route.params.projectData;
 
     const [demographyAndExperience, setDemographyAndExperience] = useState({
         startDate: '',
@@ -26,14 +27,14 @@ const ExperienceScreen = () => {
         if (field === 'startDate' || field === 'deadline') {
             setShowDatePicker(true);
         } else {
-            setInputValue(demographyAndExperience[field]); // Sæt nuværende værdi for at redigere
+            setInputValue(demographyAndExperience[field]);
         }
     };
 
     const handleUpdate = () => {
         setDemographyAndExperience({ ...demographyAndExperience, [currentField]: inputValue });
-        setInputValue(''); // Nulstil inputValue
-        setCurrentField(''); // Nulstil currentField
+        setInputValue('');
+        setCurrentField('');
         setShowDatePicker(false);
     };
 
@@ -53,7 +54,8 @@ const ExperienceScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Demography & Experience</Text>
+            <Text style={styles.header}>Spitzenklasse</Text>
+            <Text style={styles.subHeader}>Demography & Experience</Text>
 
             {currentField !== '' && currentField !== 'startDate' && currentField !== 'deadline' && (
                 <View style={styles.inputContainer}>
@@ -63,7 +65,9 @@ const ExperienceScreen = () => {
                         value={inputValue}
                         placeholder={`Enter ${currentField}`}
                     />
-                    <Button title="Update" onPress={handleUpdate} />
+                    <TouchableOpacity style={styles.updateButton} onPress={handleUpdate}>
+                        <Icon name="update" size={24} color="#FFF" />
+                    </TouchableOpacity>
                 </View>
             )}
 
@@ -81,19 +85,20 @@ const ExperienceScreen = () => {
                 {Object.entries(demographyAndExperience).map(([key, value], index) => (
                     <View key={key} style={styles.listItem}>
                         <Text style={styles.itemText}>{index + 1}. {key.charAt(0).toUpperCase() + key.slice(1)}: {value}</Text>
-                        <TouchableOpacity
-                            style={styles.button}
-                            onPress={() => handleSelect(key)}
-                        >
-                            <Text>Select</Text>
+                        <TouchableOpacity style={styles.selectButton} onPress={() => handleSelect(key)}>
+                            <Text style={styles.buttonText}>Select</Text>
                         </TouchableOpacity>
                     </View>
                 ))}
             </View>
 
             <View style={styles.buttonContainer}>
-                <Button title="Previous" onPress={() => navigation.goBack()} />
-                <Button title="Next" onPress={handleNext} />
+                <TouchableOpacity style={styles.prevButton} onPress={() => navigation.goBack()}>
+                    <Icon name="arrow-back" size={24} color="#FFF" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+                    <Icon name="arrow-forward" size={24} color="#FFF" />
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -102,11 +107,19 @@ const ExperienceScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#E8F0FE',
         padding: 20,
     },
     header: {
-        fontSize: 22,
+        fontSize: 24,
         fontWeight: 'bold',
+        color: '#0A84FF',
+        marginBottom: 10,
+        textAlign: 'center',
+    },
+    subHeader: {
+        fontSize: 20,
+        color: '#333333',
         marginBottom: 20,
     },
     listContainer: {
@@ -118,28 +131,55 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     itemText: {
+        flex: 1,
         marginRight: 10,
         fontSize: 16,
     },
-    button: {
-        marginLeft: 'auto',
-        backgroundColor: '#E5E5E5',
+    selectButton: {
+        backgroundColor: '#0A84FF',
         padding: 10,
         borderRadius: 5,
     },
+    buttonText: {
+        color: '#FFF',
+    },
     inputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
         marginBottom: 20,
     },
     input: {
-        borderColor: 'gray',
+        flex: 1,
+        borderColor: '#0A84FF',
         borderWidth: 1,
-        marginBottom: 10,
+        borderRadius: 10,
         padding: 10,
-        width: '100%',
+        marginRight: 10,
+    },
+    updateButton: {
+        backgroundColor: '#0A84FF',
+        padding: 10,
+        borderRadius: 5,
     },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+    },
+    prevButton: {
+        backgroundColor: '#0A84FF',
+        borderRadius: 50,
+        height: 50,
+        width: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    nextButton: {
+        backgroundColor: '#0A84FF',
+        borderRadius: 50,
+        height: 50,
+        width: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
 
