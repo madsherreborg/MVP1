@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const ExperienceScreen = () => {
     const navigation = useNavigation();
@@ -8,10 +9,9 @@ const ExperienceScreen = () => {
     const projectData = route.params.projectData; // Modtaget data fra CreateProjectScreen
 
     const [demographyAndExperience, setDemographyAndExperience] = useState({
+        startDate: '',
         deadline: '',
         location: '',
-        startDate: '',
-        duration: '',
         language: '',
         educationLevel: '',
         experience: '',
@@ -19,16 +19,28 @@ const ExperienceScreen = () => {
 
     const [currentField, setCurrentField] = useState('');
     const [inputValue, setInputValue] = useState('');
+    const [showDatePicker, setShowDatePicker] = useState(false);
 
     const handleSelect = (field) => {
         setCurrentField(field);
-        setInputValue(demographyAndExperience[field]); // Sæt nuværende værdi for at redigere
+        if (field === 'startDate' || field === 'deadline') {
+            setShowDatePicker(true);
+        } else {
+            setInputValue(demographyAndExperience[field]); // Sæt nuværende værdi for at redigere
+        }
     };
 
     const handleUpdate = () => {
         setDemographyAndExperience({ ...demographyAndExperience, [currentField]: inputValue });
         setInputValue(''); // Nulstil inputValue
         setCurrentField(''); // Nulstil currentField
+        setShowDatePicker(false);
+    };
+
+    const onDateChange = (event, selectedDate) => {
+        const currentDate = selectedDate || demographyAndExperience[currentField];
+        setShowDatePicker(Platform.OS === 'ios');
+        setDemographyAndExperience({ ...demographyAndExperience, [currentField]: currentDate.toISOString().split('T')[0] });
     };
 
     const handleNext = () => {
@@ -43,8 +55,7 @@ const ExperienceScreen = () => {
         <View style={styles.container}>
             <Text style={styles.header}>Demography & Experience</Text>
 
-            {/* Input for at opdatere værdier */}
-            {currentField !== '' && (
+            {currentField !== '' && currentField !== 'startDate' && currentField !== 'deadline' && (
                 <View style={styles.inputContainer}>
                     <TextInput
                         style={styles.input}
@@ -54,6 +65,16 @@ const ExperienceScreen = () => {
                     />
                     <Button title="Update" onPress={handleUpdate} />
                 </View>
+            )}
+
+            {showDatePicker && (
+                <DateTimePicker
+                    testID="dateTimePicker"
+                    value={new Date(demographyAndExperience[currentField] || new Date())}
+                    mode="date"
+                    display="default"
+                    onChange={onDateChange}
+                />
             )}
 
             <View style={styles.listContainer}>
