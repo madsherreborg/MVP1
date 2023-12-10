@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const ExperienceScreen = () => {
     const navigation = useNavigation();
+    const route = useRoute();
+    const projectData = route.params.projectData; // Modtaget data fra CreateProjectScreen
+
     const [demographyAndExperience, setDemographyAndExperience] = useState({
         deadline: '',
         location: '',
@@ -14,30 +17,62 @@ const ExperienceScreen = () => {
         experience: '',
     });
 
-    const handleSelect = (field, value) => {
-        setDemographyAndExperience({ ...demographyAndExperience, [field]: value });
+    const [currentField, setCurrentField] = useState('');
+    const [inputValue, setInputValue] = useState('');
+
+    const handleSelect = (field) => {
+        setCurrentField(field);
+        setInputValue(demographyAndExperience[field]); // Sæt nuværende værdi for at redigere
+    };
+
+    const handleUpdate = () => {
+        setDemographyAndExperience({ ...demographyAndExperience, [currentField]: inputValue });
+        setInputValue(''); // Nulstil inputValue
+        setCurrentField(''); // Nulstil currentField
+    };
+
+    const handleNext = () => {
+        const combinedData = {
+            ...projectData,
+            demographyAndExperience
+        };
+        navigation.navigate('Skills', { combinedData });
     };
 
     return (
         <View style={styles.container}>
             <Text style={styles.header}>Demography & Experience</Text>
+
+            {/* Input for at opdatere værdier */}
+            {currentField !== '' && (
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={setInputValue}
+                        value={inputValue}
+                        placeholder={`Enter ${currentField}`}
+                    />
+                    <Button title="Update" onPress={handleUpdate} />
+                </View>
+            )}
+
             <View style={styles.listContainer}>
-                {/* Liste over punkter */}
                 {Object.entries(demographyAndExperience).map(([key, value], index) => (
                     <View key={key} style={styles.listItem}>
-                        <Text style={styles.itemText}>{index + 1}. {key.charAt(0).toUpperCase() + key.slice(1)}</Text>
+                        <Text style={styles.itemText}>{index + 1}. {key.charAt(0).toUpperCase() + key.slice(1)}: {value}</Text>
                         <TouchableOpacity
                             style={styles.button}
-                            onPress={() => handleSelect(key, 'Example Value')} // Ændre til faktisk funktionalitet
+                            onPress={() => handleSelect(key)}
                         >
                             <Text>Select</Text>
                         </TouchableOpacity>
                     </View>
                 ))}
             </View>
+
             <View style={styles.buttonContainer}>
                 <Button title="Previous" onPress={() => navigation.goBack()} />
-                <Button title="Next" onPress={() => navigation.navigate('Skills')} />
+                <Button title="Next" onPress={handleNext} />
             </View>
         </View>
     );
@@ -70,6 +105,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#E5E5E5',
         padding: 10,
         borderRadius: 5,
+    },
+    inputContainer: {
+        marginBottom: 20,
+    },
+    input: {
+        borderColor: 'gray',
+        borderWidth: 1,
+        marginBottom: 10,
+        padding: 10,
+        width: '100%',
     },
     buttonContainer: {
         flexDirection: 'row',

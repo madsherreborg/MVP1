@@ -1,11 +1,34 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, ScrollView, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, TextInput, Button, ScrollView, StyleSheet, Alert } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
 
 const AssignmentDescriptionsScreen = () => {
     const navigation = useNavigation();
+    const route = useRoute();
+    const fullData = route.params.fullData; // Modtaget data fra CandidateProfileScreen
+
     const [topic, setTopic] = useState('');
     const [description, setDescription] = useState('');
+
+    const saveAssignment = async () => {
+        const assignmentToSave = {
+            ...fullData,
+            topic,
+            description,
+            // Tilføj eventuelle yderligere felter du måtte have
+        };
+
+        try {
+            const db = getFirestore();
+            await addDoc(collection(db, 'assignments'), assignmentToSave);
+            Alert.alert('Success', 'Assignment saved successfully');
+            navigation.navigate('AssignmentCreated'); // Eller naviger til en anden skærm
+        } catch (error) {
+            console.error('Error saving assignment:', error);
+            Alert.alert('Error', 'Error saving assignment');
+        }
+    };
 
     return (
         <ScrollView style={styles.container}>
@@ -31,7 +54,7 @@ const AssignmentDescriptionsScreen = () => {
 
             <View style={styles.buttonContainer}>
                 <Button title="Previous" onPress={() => navigation.goBack()} />
-                <Button title="Next" onPress={() => navigation.navigate('AssignmentCreated')} />
+                <Button title="Save Assignment" onPress={saveAssignment} />
             </View>
         </ScrollView>
     );

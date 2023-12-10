@@ -12,8 +12,8 @@ const CreateProjectScreen = () => {
     const navigation = useNavigation();
 
     const handleNext = () => {
-        // Du kan tilføje logik her, hvis du har brug for at gemme data eller validere input, før du navigerer
-        navigation.navigate('Experience');
+        // Tilføj eventuel validering af data her, hvis nødvendigt
+        navigation.navigate('Experience', { projectData }); // Send data til ExperienceScreen
     };
 
     const handleInputChange = (name, value) => {

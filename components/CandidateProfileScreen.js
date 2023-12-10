@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-import Slider from '@react-native-community/slider';
-import { useNavigation } from '@react-navigation/native';
-
+import Slider from '@react-native-community/slider';  // Opdateret import
+import { useNavigation, useRoute } from '@react-navigation/native';//odateret import
 const CandidateProfileScreen = () => {
     const navigation = useNavigation();
+    const route = useRoute();
+    const combinedData = route.params.fullData; // Modtaget data fra SkillsScreen
+
     const initialProfileValues = {
         followerOrLeader: 0.5,
         analyticOrCreative: 0.5,
@@ -19,10 +21,19 @@ const CandidateProfileScreen = () => {
         participantOrAgileFacilitator: 0.5,
         specialistOrGeneralist: 0.5,
     };
+
     const [profile, setProfile] = useState(initialProfileValues);
 
     const updateProfile = (key, value) => {
         setProfile({ ...profile, [key]: value });
+    };
+
+    const handleNext = () => {
+        const fullData = {
+            ...combinedData,
+            candidateProfile: profile
+        };
+        navigation.navigate('AssignmentDescriptions', { fullData });
     };
 
     const attributes = {
@@ -61,7 +72,7 @@ const CandidateProfileScreen = () => {
 
             <View style={styles.buttonContainer}>
                 <Button title="Previous" onPress={() => navigation.goBack()} />
-                <Button title="Next" onPress={() => navigation.navigate('AssignmentDescriptions')} />
+                <Button title="Next" onPress={handleNext} />
             </View>
         </View>
     );
