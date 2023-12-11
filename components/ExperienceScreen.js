@@ -84,9 +84,9 @@ const ExperienceScreen = () => {
             <View style={styles.listContainer}>
                 {Object.entries(demographyAndExperience).map(([key, value], index) => (
                     <View key={key} style={styles.listItem}>
-                        <Text style={styles.itemText}>{index + 1}. {key.charAt(0).toUpperCase() + key.slice(1)}: {value}</Text>
+                        <Text style={styles.itemText}>{index + 1}. {key.charAt(0).toUpperCase() + key.slice(1)}:</Text>
                         <TouchableOpacity style={styles.selectButton} onPress={() => handleSelect(key)}>
-                            <Text style={styles.buttonText}>Select</Text>
+                            <Text style={[styles.buttonText, value ? styles.selectedValueText : null]}>{value || 'Select'}</Text>
                         </TouchableOpacity>
                     </View>
                 ))}
@@ -110,17 +110,21 @@ const styles = StyleSheet.create({
         backgroundColor: '#E8F0FE',
         padding: 20,
     },
+    headerContainer: {
+        alignItems: 'center',
+        marginBottom: 20,
+    },
     header: {
         fontSize: 24,
         fontWeight: 'bold',
         color: '#0A84FF',
-        marginBottom: 10,
         textAlign: 'center',
     },
     subHeader: {
         fontSize: 20,
-        color: '#333333',
-        marginBottom: 20,
+        fontWeight: 'bold',
+        color: 'black',
+        textAlign: 'center',
     },
     listContainer: {
         marginBottom: 20,
@@ -180,6 +184,10 @@ const styles = StyleSheet.create({
         width: 50,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    selectedValueText: {
+        fontWeight: 'bold',
+        color: 'black', // Sort tekst for valgte værdier
     },
 });
 
