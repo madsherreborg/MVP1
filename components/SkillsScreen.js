@@ -14,7 +14,6 @@ const SkillsScreen = () => {
     const [selectedSkillIndex, setSelectedSkillIndex] = useState(null);
     const [selectedSkillType, setSelectedSkillType] = useState('');
 
-
     const itSkillsOptions = [
         "JavaScript", "Python", "Java", "C#", "C++",
         "PHP", "Swift", "Ruby", "TypeScript", "Kotlin",
@@ -22,6 +21,7 @@ const SkillsScreen = () => {
         "SQL", "Dart", "Groovy", "Lua", "MATLAB"
         // Tilføj flere færdigheder efter behov
     ];
+
     const handleSelectSkill = (index, type) => {
         setSelectedSkillIndex(index);
         setSelectedSkillType(type);
@@ -49,7 +49,7 @@ const SkillsScreen = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.header}>Spitzenklasse</Text>
-            <Text style={styles.subHeader}>Must have skills prioritized</Text>
+            <Text style={styles.subHeaderBold}>Must have skills prioritized</Text>
             {mustHaveSkills.map((skill, index) => (
                 <View key={index} style={styles.listItem}>
                     <Text style={styles.itemText}>{index + 1}. {skill || `Skill ${index + 1}`}</Text>
@@ -58,7 +58,7 @@ const SkillsScreen = () => {
                     </TouchableOpacity>
                 </View>
             ))}
-            <Text style={styles.subHeader}>Nice to have skills</Text>
+            <Text style={styles.subHeaderBold}>Nice to have skills</Text>
             {niceToHaveSkills.map((skill, index) => (
                 <View key={index} style={styles.listItem}>
                     <Text style={styles.itemText}>{index + 1}. {skill || `Skill ${index + 1}`}</Text>
@@ -102,9 +102,10 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         textAlign: 'center',
     },
-    subHeader: {
+    subHeaderBold: {
         fontSize: 20,
-        color: '#333333',
+        fontWeight: 'bold',
+        color: 'black',
         marginBottom: 10,
     },
     listItem: {
