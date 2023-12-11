@@ -13,6 +13,11 @@ const AssignmentDescriptionsScreen = () => {
     const [description, setDescription] = useState('');
 
     const saveAssignment = async () => {
+        if (!topic.trim() || !description.trim()) {
+            Alert.alert('Missing Fields', 'Please enter both topic and description.');
+            return;
+        }
+
         const assignmentToSave = {
             ...fullData,
             topic,
@@ -104,6 +109,7 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        marginTop: 20,
     },
     prevButton: {
         backgroundColor: '#0A84FF',

@@ -50,7 +50,7 @@ const CandidateProfileScreen = () => {
             ...combinedData,
             candidateProfile: profile
         };
-        navigation.navigate('AssignmentDescriptions', { fullData });
+        navigation.navigate('AssignmentDescriptions', { fullData }); // Ret navnet her
     };
 
     return (
@@ -83,6 +83,7 @@ const CandidateProfileScreen = () => {
         </View>
     );
 };
+
 
 const styles = StyleSheet.create({
     container: {

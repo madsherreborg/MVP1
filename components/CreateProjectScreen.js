@@ -5,12 +5,11 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const CreateProjectScreen = () => {
     const [projectName, setProjectName] = useState('');
-
     const navigation = useNavigation();
 
     const handleNext = () => {
         // Her kan du tilføje validering af projektets navn, hvis nødvendigt
-        navigation.navigate('Experience', { projectName }); // Send kun projektets navn til ExperienceScreen
+        navigation.navigate('Experience', { projectName: projectName }); // Send projektets navn til ExperienceScreen
     };
 
     return (
@@ -35,7 +34,7 @@ const CreateProjectScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#E8F0FE', // En lys blå farve
+        backgroundColor: '#E8F0FE',
         padding: 20,
     },
     header: {

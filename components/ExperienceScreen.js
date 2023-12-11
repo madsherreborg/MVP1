@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Platform } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -7,8 +7,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 const ExperienceScreen = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    const projectData = route.params.projectData;
-
+    const [projectData, setProjectData] = useState({ projectName: '' });
     const [demographyAndExperience, setDemographyAndExperience] = useState({
         startDate: '',
         deadline: '',
@@ -21,6 +20,12 @@ const ExperienceScreen = () => {
     const [currentField, setCurrentField] = useState('');
     const [inputValue, setInputValue] = useState('');
     const [showDatePicker, setShowDatePicker] = useState(false);
+
+    useEffect(() => {
+        if (route.params?.projectName) {
+            setProjectData({ projectName: route.params.projectName });
+        }
+    }, [route.params?.projectName]);
 
     const handleSelect = (field) => {
         setCurrentField(field);
@@ -110,10 +115,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#E8F0FE',
         padding: 20,
     },
-    headerContainer: {
-        alignItems: 'center',
-        marginBottom: 20,
-    },
     header: {
         fontSize: 24,
         fontWeight: 'bold',
@@ -146,6 +147,10 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: '#FFF',
+    },
+    selectedValueText: {
+        fontWeight: 'bold',
+        color: 'black',
     },
     inputContainer: {
         flexDirection: 'row',
@@ -184,10 +189,6 @@ const styles = StyleSheet.create({
         width: 50,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    selectedValueText: {
-        fontWeight: 'bold',
-        color: 'black', // Sort tekst for valgte værdier
     },
 });
 
