@@ -4,21 +4,13 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const CreateProjectScreen = () => {
-    const [projectData, setProjectData] = useState({
-        name: '',
-        description: '',
-        // Tilføj yderligere projekt felter efter behov
-    });
+    const [projectName, setProjectName] = useState('');
 
     const navigation = useNavigation();
 
     const handleNext = () => {
-        // Tilføj eventuel validering af data her, hvis nødvendigt
-        navigation.navigate('Experience', { projectData }); // Send data til ExperienceScreen
-    };
-
-    const handleInputChange = (name, value) => {
-        setProjectData({ ...projectData, [name]: value });
+        // Her kan du tilføje validering af projektets navn, hvis nødvendigt
+        navigation.navigate('Experience', { projectName }); // Send kun projektets navn til ExperienceScreen
     };
 
     return (
@@ -29,17 +21,10 @@ const CreateProjectScreen = () => {
             <TextInput
                 style={styles.input}
                 placeholder="Assignment name"
-                onChangeText={(text) => handleInputChange('name', text)}
-                value={projectData.name}
+                onChangeText={setProjectName}
+                value={projectName}
             />
-            <Text style={styles.label}>Short description:</Text>
-            <TextInput
-                style={styles.textArea}
-                placeholder="Assignment description"
-                onChangeText={(text) => handleInputChange('description', text)}
-                value={projectData.description}
-                multiline
-            />
+
             <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
                 <Icon name="arrow-forward" size={24} color="#FFF" />
             </TouchableOpacity>
@@ -66,18 +51,8 @@ const styles = StyleSheet.create({
         borderColor: '#0A84FF',
         borderWidth: 1,
         borderRadius: 10,
-        marginBottom: 10,
-        padding: 10,
-    },
-    textArea: {
-        backgroundColor: '#FFF',
-        borderColor: '#0A84FF',
-        borderWidth: 1,
-        borderRadius: 10,
         marginBottom: 20,
         padding: 10,
-        minHeight: 100,
-        textAlignVertical: 'top',
     },
     label: {
         fontSize: 16,
