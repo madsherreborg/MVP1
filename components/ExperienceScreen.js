@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, Platform, Modal } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Picker } from '@react-native-picker/picker'; // Opdateret import
 
 const ExperienceScreen = () => {
     const navigation = useNavigation();
     const route = useRoute();
     const [projectData, setProjectData] = useState({ projectName: '' });
     const [demographyAndExperience, setDemographyAndExperience] = useState({
-        startDate: '',
-        deadline: '',
+        contractStart: '',
+        contractEnd: '',
         location: '',
         language: '',
         educationLevel: '',
@@ -20,6 +21,8 @@ const ExperienceScreen = () => {
     const [currentField, setCurrentField] = useState('');
     const [inputValue, setInputValue] = useState('');
     const [showDatePicker, setShowDatePicker] = useState(false);
+    const [showEducationPicker, setShowEducationPicker] = useState(false);
+    const [showExperiencePicker, setShowExperiencePicker] = useState(false);
 
     useEffect(() => {
         if (route.params?.projectName) {
@@ -29,8 +32,14 @@ const ExperienceScreen = () => {
 
     const handleSelect = (field) => {
         setCurrentField(field);
-        if (field === 'startDate' || field === 'deadline') {
+        if (field === 'contractStart' || field === 'contractEnd') {
             setShowDatePicker(true);
+        } else if (field === 'educationLevel') {
+            setShowEducationPicker(true);
+            setInputValue(demographyAndExperience.educationLevel);
+        } else if (field === 'experience') {
+            setShowExperiencePicker(true);
+            setInputValue(demographyAndExperience.experience);
         } else {
             setInputValue(demographyAndExperience[field]);
         }
@@ -41,6 +50,8 @@ const ExperienceScreen = () => {
         setInputValue('');
         setCurrentField('');
         setShowDatePicker(false);
+        setShowEducationPicker(false);
+        setShowExperiencePicker(false);
     };
 
     const onDateChange = (event, selectedDate) => {
@@ -62,7 +73,7 @@ const ExperienceScreen = () => {
             <Text style={styles.header}>Spitzenklasse</Text>
             <Text style={styles.subHeader}>Demography & Experience</Text>
 
-            {currentField !== '' && currentField !== 'startDate' && currentField !== 'deadline' && (
+            {currentField !== '' && currentField !== 'contractStart' && currentField !== 'contractEnd' && (
                 <View style={styles.inputContainer}>
                     <TextInput
                         style={styles.input}
@@ -105,6 +116,54 @@ const ExperienceScreen = () => {
                     <Icon name="arrow-forward" size={24} color="#FFF" />
                 </TouchableOpacity>
             </View>
+
+            {/* Modal for Education Level */}
+            {showEducationPicker && (
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={showEducationPicker}
+                    onRequestClose={() => setShowEducationPicker(false)}>
+                    <View style={styles.modalView}>
+                        <Picker
+                            selectedValue={inputValue}
+                            onValueChange={(itemValue) => setInputValue(itemValue)}
+                            style={styles.picker}>
+                            <Picker.Item label="Bachelor" value="Bachelor" />
+                            <Picker.Item label="Master" value="Master" />
+                            <Picker.Item label="PhD" value="PhD" />
+                        </Picker>
+                        <TouchableOpacity style={styles.okButton} onPress={handleUpdate}>
+                            <Text style={styles.buttonText}>OK</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
+            )}
+
+            {/* Modal for Experience */}
+            {showExperiencePicker && (
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={showExperiencePicker}
+                    onRequestClose={() => setShowExperiencePicker(false)}>
+                    <View style={styles.modalView}>
+                        <Picker
+                            selectedValue={inputValue}
+                            onValueChange={(itemValue) => setInputValue(itemValue)}
+                            style={styles.picker}>
+                            <Picker.Item label="1-2 years" value="1-2 years" />
+                            <Picker.Item label="2-3 years" value="2-3 years" />
+                            <Picker.Item label="3-4 years" value="3-4 years" />
+                            <Picker.Item label="4-5 years" value="4-5 years" />
+                            <Picker.Item label="5+ years" value="5+ years" />
+                        </Picker>
+                        <TouchableOpacity style={styles.okButton} onPress={handleUpdate}>
+                            <Text style={styles.buttonText}>OK</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
+            )}
         </View>
     );
 };
@@ -189,6 +248,27 @@ const styles = StyleSheet.create({
         width: 50,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    modalView: {
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        backgroundColor: 'white',
+        padding: 20,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    picker: {
+        width: '100%',
+        height: 150,
+    },
+    okButton: {
+        backgroundColor: '#0A84FF',
+        padding: 10,
+        borderRadius: 5,
+        marginTop: 10,
     },
 });
 
