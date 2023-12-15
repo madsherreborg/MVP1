@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // Husk at importere ikonet
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, ImageBackground } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const ContactScreen = ({ route }) => {
     const { consultant } = route.params;
@@ -17,44 +17,51 @@ const ContactScreen = ({ route }) => {
     const isUserMessage = (msg) => msg.sender === 'user';
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>{consultant.name}</Text>
+        <ImageBackground source={require('../assets/inno.png')} style={styles.backgroundImage}>
+            <ScrollView style={styles.container}>
+                <Text style={styles.header}>{consultant.name}</Text>
 
-            <ScrollView style={styles.messagesContainer}>
-                {messages.map((msg, index) => (
-                    <View key={index} style={[styles.message, isUserMessage(msg) ? styles.userMessage : styles.otherMessage]}>
-                        <Text>{msg.text}</Text>
-                    </View>
-                ))}
+                <ScrollView style={styles.messagesContainer}>
+                    {messages.map((msg, index) => (
+                        <View key={index} style={[styles.message, isUserMessage(msg) ? styles.userMessage : styles.otherMessage]}>
+                            <Text>{msg.text}</Text>
+                        </View>
+                    ))}
+                </ScrollView>
+
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        style={styles.input}
+                        value={message}
+                        onChangeText={setMessage}
+                        placeholder="Type a message..."
+                        placeholderTextColor="#0A84FF" // Blå farve til placeholder
+                        selectionColor="#0A84FF" // Blå farve til tekstmarkøren og valg
+                    />
+                    <TouchableOpacity onPress={sendMessage}>
+                        <Icon name="send" size={24} color="#0A84FF" />
+                    </TouchableOpacity>
+                </View>
             </ScrollView>
-
-            <View style={styles.inputContainer}>
-                <TextInput
-                    style={styles.input}
-                    value={message}
-                    onChangeText={setMessage}
-                    placeholder="Type a message..."
-                />
-                <TouchableOpacity onPress={sendMessage}>
-                    <Icon name="send" size={24} color="#0A84FF" />
-                </TouchableOpacity>
-            </View>
-        </View>
+        </ImageBackground>
     );
 };
-
 const styles = StyleSheet.create({
+    backgroundImage: {
+        flex: 1,
+        resizeMode: 'cover',
+    },
     container: {
         flex: 1,
         padding: 10,
-        backgroundColor: '#E8F0FE', // Brug samme baggrundsfarve som CvListeScreen
+        backgroundColor: 'rgba(255, 255, 255, 0.1)', // Let gennemsigtig baggrund for at tillade billedet at skinne igennem
     },
     header: {
         fontSize: 22,
         fontWeight: 'bold',
         marginBottom: 10,
         textAlign: 'center',
-        color: '#0A84FF', // Spitzenklasse blå
+        color: '#0A84FF',
     },
     messagesContainer: {
         flex: 1,
@@ -86,6 +93,7 @@ const styles = StyleSheet.create({
         padding: 10,
         marginRight: 10,
         borderRadius: 5,
+        color: '#0A84FF', // Blå farve til inputteksten
     },
     // Yderligere stilarter efter behov
 });

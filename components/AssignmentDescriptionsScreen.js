@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Alert, ImageBackground } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -9,18 +9,16 @@ const AssignmentDescriptionsScreen = () => {
     const route = useRoute();
     const fullData = route.params.fullData;
 
-    const [topic, setTopic] = useState('');
     const [description, setDescription] = useState('');
 
     const saveAssignment = async () => {
-        if (!topic.trim() || !description.trim()) {
-            Alert.alert('Missing Fields', 'Please enter both topic and description.');
+        if (!description.trim()) {
+            Alert.alert('Missing Fields', 'Please enter a description.');
             return;
         }
 
         const assignmentToSave = {
             ...fullData,
-            topic,
             description,
         };
 
@@ -36,43 +34,42 @@ const AssignmentDescriptionsScreen = () => {
     };
 
     return (
-        <ScrollView style={styles.container}>
-            <Text style={styles.header}>Spitzenklasse</Text>
+        <ImageBackground source={require('../assets/inno.png')} style={styles.backgroundImage}>
+            <ScrollView style={styles.container}>
+                <Text style={styles.header}>Spitzenklasse</Text>
 
-            <Text style={styles.label}>Topic:</Text>
-            <TextInput
-                style={styles.input}
-                value={topic}
-                onChangeText={setTopic}
-                placeholder="Enter topic"
-            />
+                <Text style={styles.boldLabel}>Description:</Text>
+                <TextInput
+                    style={styles.textArea}
+                    value={description}
+                    onChangeText={setDescription}
+                    placeholder="Enter description"
+                    multiline={true}
+                    numberOfLines={4}
+                />
 
-            <Text style={styles.label}>Description:</Text>
-            <TextInput
-                style={styles.textArea}
-                value={description}
-                onChangeText={setDescription}
-                placeholder="Enter description"
-                multiline={true}
-                numberOfLines={4}
-            />
-
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.prevButton} onPress={() => navigation.goBack()}>
-                    <Icon name="arrow-back" size={24} color="#FFF" />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.nextButton} onPress={saveAssignment}>
-                    <Icon name="save" size={24} color="#FFF" />
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.prevButton} onPress={() => navigation.goBack()}>
+                        <Icon name="arrow-back" size={24} color="#FFF" />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.nextButton} onPress={saveAssignment}>
+                        <Icon name="save" size={24} color="#FFF" />
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
+        </ImageBackground>
     );
 };
 
+
 const styles = StyleSheet.create({
+    backgroundImage: {
+        flex: 1,
+        resizeMode: 'cover',
+    },
     container: {
         flex: 1,
-        backgroundColor: '#E8F0FE',
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
         padding: 20,
     },
     header: {
@@ -82,9 +79,10 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         textAlign: 'center',
     },
-    label: {
+    boldLabel: {
         fontSize: 16,
-        color: '#0A84FF',
+        fontWeight: 'bold', // Gør teksten fed
+        color: '#0A84FF', // Sætter teksten til sort
         marginBottom: 5,
     },
     input: {

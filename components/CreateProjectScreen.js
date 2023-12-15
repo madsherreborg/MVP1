@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, Platform, Modal, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -8,34 +8,46 @@ const CreateProjectScreen = () => {
     const navigation = useNavigation();
 
     const handleNext = () => {
-        // Her kan du tilføje validering af projektets navn, hvis nødvendigt
-        navigation.navigate('Experience', { projectName: projectName }); // Send projektets navn til ExperienceScreen
+        navigation.navigate('Experience', { projectName: projectName });
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Spitzenklasse</Text>
+        <ImageBackground source={require('../assets/inno.png')} style={styles.backgroundImage}>
+            <View style={styles.container}>
 
-            <Text style={styles.label}>Assignment name:</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Assignment name"
-                onChangeText={setProjectName}
-                value={projectName}
-            />
 
-            <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-                <Icon name="arrow-forward" size={24} color="#FFF" />
-            </TouchableOpacity>
-        </View>
+                <Text style={styles.header}>Spitzenklasse</Text>
+
+                <Text style={styles.label}>Assignment name:</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Assignment name"
+                    onChangeText={setProjectName}
+                    value={projectName}
+                />
+
+                <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+                    <Icon name="arrow-forward" size={24} color="#FFF" />
+                </TouchableOpacity>
+            </View>
+        </ImageBackground>
     );
 };
 
 const styles = StyleSheet.create({
+    backgroundImage: {
+        flex: 1,
+        resizeMode: 'cover',
+    },
     container: {
         flex: 1,
-        backgroundColor: '#E8F0FE',
+        backgroundColor: 'rgba(255, 255, 255, 0.1)', // Let translucent for the background image to show through
         padding: 20,
+    },
+    logo: {
+        height: 100, // Adjust as per your logo's aspect ratio
+        resizeMode: 'contain',
+        alignSelf: 'center',
     },
     header: {
         fontSize: 24,
@@ -52,11 +64,18 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 20,
         padding: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
     },
     label: {
         fontSize: 16,
-        color: '#333333',
+        color: '#0A84FF', // Samme blå farve som anvendt i styles.header
+        fontWeight: 'bold', // Gør teksten fed
         marginBottom: 5,
+
     },
     nextButton: {
         backgroundColor: '#0A84FF',
@@ -66,6 +85,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'flex-end',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
     },
 });
 

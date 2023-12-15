@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -54,41 +54,47 @@ const CandidateProfileScreen = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Spitzenklasse</Text>
+        <ImageBackground source={require('../assets/inno.png')} style={styles.backgroundImage}>
+            <View style={styles.container}>
+                <Text style={styles.header}>Spitzenklasse</Text>
 
-            {Object.keys(initialProfileValues).map((key) => (
-                <View key={key} style={styles.sliderContainer}>
-                    <Text style={styles.label}>{attributes[key][0]}</Text>
-                    <Slider
-                        style={styles.slider}
-                        value={profile[key]}
-                        onValueChange={(value) => updateProfile(key, value)}
-                        minimumValue={0}
-                        maximumValue={1}
-                        step={0.01}
-                    />
-                    <Text style={styles.label}>{attributes[key][1]}</Text>
+                {Object.keys(initialProfileValues).map((key) => (
+                    <View key={key} style={styles.sliderContainer}>
+                        <Text style={styles.label}>{attributes[key][0]}</Text>
+                        <Slider
+                            style={styles.slider}
+                            value={profile[key]}
+                            onValueChange={(value) => updateProfile(key, value)}
+                            minimumValue={0}
+                            maximumValue={1}
+                            step={0.01}
+                        />
+                        <Text style={styles.label}>{attributes[key][1]}</Text>
+                    </View>
+                ))}
+
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.prevButton} onPress={() => navigation.goBack()}>
+                        <Icon name="arrow-back" size={24} color="#FFF" />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+                        <Icon name="arrow-forward" size={24} color="#FFF" />
+                    </TouchableOpacity>
                 </View>
-            ))}
-
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.prevButton} onPress={() => navigation.goBack()}>
-                    <Icon name="arrow-back" size={24} color="#FFF" />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-                    <Icon name="arrow-forward" size={24} color="#FFF" />
-                </TouchableOpacity>
             </View>
-        </View>
+        </ImageBackground>
     );
 };
 
 
 const styles = StyleSheet.create({
+    backgroundImage: {
+        flex: 1,
+        resizeMode: 'cover',
+    },
     container: {
         flex: 1,
-        backgroundColor: '#E8F0FE',
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
         padding: 20,
     },
     header: {
@@ -98,6 +104,12 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         textAlign: 'center',
     },
+    label: {
+        width: '25%',
+        fontSize: 16,
+        fontWeight: 'bold', // Gør teksten fed
+        color: 'black', // Sætter teksten til sort,
+    },
     sliderContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -105,8 +117,10 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     label: {
-        width: '25%',
-        fontSize: 16,
+        width: '24%',
+        fontSize: 15,
+        fontWeight: 'bold', // Gør teksten fed
+        color: '#0A84FF', // Sætter teksten til sort
     },
     slider: {
         flex: 1,

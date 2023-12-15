@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, Platform, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, Platform, Modal, ImageBackground } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { Picker } from '@react-native-picker/picker'; // Opdateret import
+import { Picker } from '@react-native-picker/picker';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
 
 const ExperienceScreen = () => {
     const navigation = useNavigation();
@@ -16,6 +17,7 @@ const ExperienceScreen = () => {
         language: '',
         educationLevel: '',
         experience: '',
+        wageRange: [100, 3000], // Tilføjet wageRange til state
     });
 
     const [currentField, setCurrentField] = useState('');
@@ -60,6 +62,10 @@ const ExperienceScreen = () => {
         setDemographyAndExperience({ ...demographyAndExperience, [currentField]: currentDate.toISOString().split('T')[0] });
     };
 
+    const handleWageChange = (values) => {
+        setDemographyAndExperience({ ...demographyAndExperience, wageRange: values });
+    };
+
     const handleNext = () => {
         const combinedData = {
             ...projectData,
@@ -69,109 +75,137 @@ const ExperienceScreen = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Spitzenklasse</Text>
-            <Text style={styles.subHeader}>Demography & Experience</Text>
+        <ImageBackground source={require('../assets/inno.png')} style={styles.backgroundImage}>
+            <View style={styles.container}>
+                <Text style={styles.header}>Spitzenklasse</Text>
+                <Text style={styles.subHeader}>Demography & Experience</Text>
 
-            {currentField !== '' && currentField !== 'contractStart' && currentField !== 'contractEnd' && (
-                <View style={styles.inputContainer}>
-                    <TextInput
-                        style={styles.input}
-                        onChangeText={setInputValue}
-                        value={inputValue}
-                        placeholder={`Enter ${currentField}`}
+                {currentField !== '' && currentField !== 'contractStart' && currentField !== 'contractEnd' && (
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                            style={styles.input}
+                            onChangeText={setInputValue}
+                            value={inputValue}
+                            placeholder={`Enter ${currentField}`}
+                        />
+                        <TouchableOpacity style={styles.updateButton} onPress={handleUpdate}>
+                            <Icon name="update" size={24} color="#FFF" />
+                        </TouchableOpacity>
+                    </View>
+                )}
+
+                {showDatePicker && (
+                    <DateTimePicker
+                        testID="dateTimePicker"
+                        value={new Date(demographyAndExperience[currentField] || new Date())}
+                        mode="date"
+                        display="default"
+                        onChange={onDateChange}
                     />
-                    <TouchableOpacity style={styles.updateButton} onPress={handleUpdate}>
-                        <Icon name="update" size={24} color="#FFF" />
+                )}
+
+                <View style={styles.listContainer}>
+                    {Object.entries(demographyAndExperience).map(([key, value], index) => (
+                        <View key={key} style={styles.listItem}>
+                            <Text style={styles.itemText}>{index + 1}. {key.charAt(0).toUpperCase() + key.slice(1)}:</Text>
+                            <TouchableOpacity
+                                style={styles.selectButton}
+                                onPress={() => handleSelect(key)}
+                            >
+                                <Text style={[styles.buttonText, value ? styles.selectedValueText : null]}>
+                                    {key === 'wageRange' ? `${value[0]} - ${value[1]} kr/hr` : value || 'Select'}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    ))}
+                </View>
+
+                {showEducationPicker && (
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={showEducationPicker}
+                        onRequestClose={() => setShowEducationPicker(false)}>
+                        <View style={styles.modalView}>
+                            <Picker
+                                selectedValue={inputValue}
+                                onValueChange={(itemValue) => setInputValue(itemValue)}
+                                style={styles.picker}>
+                                <Picker.Item label="Bachelor" value="Bachelor" />
+                                <Picker.Item label="Master" value="Master" />
+                                <Picker.Item label="PhD" value="PhD" />
+                            </Picker>
+                            <TouchableOpacity style={styles.okButton} onPress={handleUpdate}>
+                                <Text style={styles.buttonText}>OK</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </Modal>
+                )}
+
+                {showExperiencePicker && (
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={showExperiencePicker}
+                        onRequestClose={() => setShowExperiencePicker(false)}>
+                        <View style={styles.modalView}>
+                            <Picker
+                                selectedValue={inputValue}
+                                onValueChange={(itemValue) => setInputValue(itemValue)}
+                                style={styles.picker}>
+                                <Picker.Item label="1-2 years" value="1-2 years" />
+                                <Picker.Item label="2-3 years" value="2-3 years" />
+                                <Picker.Item label="3-4 years" value="3-4 years" />
+                                <Picker.Item label="4-5 years" value="4-5 years" />
+                                <Picker.Item label="5+ years" value="5+ years" />
+                            </Picker>
+                            <TouchableOpacity style={styles.okButton} onPress={handleUpdate}>
+                                <Text style={styles.buttonText}>OK</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </Modal>
+                )}
+
+                {/* MultiSlider Integration */}
+                <View style={styles.sliderContainer}>
+                    <Text style={styles.subHeader}>Wage/hour</Text>
+                    <MultiSlider
+                        values={demographyAndExperience.wageRange}
+                        sliderLength={280}
+                        onValuesChange={handleWageChange}
+                        min={100}
+                        max={3000}
+                        step={1}
+                    />
+                    <Text>Wage Range: {demographyAndExperience.wageRange[0]} - {demographyAndExperience.wageRange[1]} kr/hr</Text>
+
+
+
+                </View>
+
+
+                {/* Next og Prev Buttons */}
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.prevButton} onPress={() => navigation.goBack()}>
+                        <Icon name="arrow-back" size={24} color="#FFF" />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+                        <Icon name="arrow-forward" size={24} color="#FFF" />
                     </TouchableOpacity>
                 </View>
-            )}
-
-            {showDatePicker && (
-                <DateTimePicker
-                    testID="dateTimePicker"
-                    value={new Date(demographyAndExperience[currentField] || new Date())}
-                    mode="date"
-                    display="default"
-                    onChange={onDateChange}
-                />
-            )}
-
-            <View style={styles.listContainer}>
-                {Object.entries(demographyAndExperience).map(([key, value], index) => (
-                    <View key={key} style={styles.listItem}>
-                        <Text style={styles.itemText}>{index + 1}. {key.charAt(0).toUpperCase() + key.slice(1)}:</Text>
-                        <TouchableOpacity style={styles.selectButton} onPress={() => handleSelect(key)}>
-                            <Text style={[styles.buttonText, value ? styles.selectedValueText : null]}>{value || 'Select'}</Text>
-                        </TouchableOpacity>
-                    </View>
-                ))}
             </View>
-
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.prevButton} onPress={() => navigation.goBack()}>
-                    <Icon name="arrow-back" size={24} color="#FFF" />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-                    <Icon name="arrow-forward" size={24} color="#FFF" />
-                </TouchableOpacity>
-            </View>
-
-            {/* Modal for Education Level */}
-            {showEducationPicker && (
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={showEducationPicker}
-                    onRequestClose={() => setShowEducationPicker(false)}>
-                    <View style={styles.modalView}>
-                        <Picker
-                            selectedValue={inputValue}
-                            onValueChange={(itemValue) => setInputValue(itemValue)}
-                            style={styles.picker}>
-                            <Picker.Item label="Bachelor" value="Bachelor" />
-                            <Picker.Item label="Master" value="Master" />
-                            <Picker.Item label="PhD" value="PhD" />
-                        </Picker>
-                        <TouchableOpacity style={styles.okButton} onPress={handleUpdate}>
-                            <Text style={styles.buttonText}>OK</Text>
-                        </TouchableOpacity>
-                    </View>
-                </Modal>
-            )}
-
-            {/* Modal for Experience */}
-            {showExperiencePicker && (
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={showExperiencePicker}
-                    onRequestClose={() => setShowExperiencePicker(false)}>
-                    <View style={styles.modalView}>
-                        <Picker
-                            selectedValue={inputValue}
-                            onValueChange={(itemValue) => setInputValue(itemValue)}
-                            style={styles.picker}>
-                            <Picker.Item label="1-2 years" value="1-2 years" />
-                            <Picker.Item label="2-3 years" value="2-3 years" />
-                            <Picker.Item label="3-4 years" value="3-4 years" />
-                            <Picker.Item label="4-5 years" value="4-5 years" />
-                            <Picker.Item label="5+ years" value="5+ years" />
-                        </Picker>
-                        <TouchableOpacity style={styles.okButton} onPress={handleUpdate}>
-                            <Text style={styles.buttonText}>OK</Text>
-                        </TouchableOpacity>
-                    </View>
-                </Modal>
-            )}
-        </View>
+        </ImageBackground>
     );
 };
 
 const styles = StyleSheet.create({
+    backgroundImage: {
+        flex: 1,
+        resizeMode: 'cover',
+    },
     container: {
         flex: 1,
-        backgroundColor: '#E8F0FE',
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
         padding: 20,
     },
     header: {
@@ -198,6 +232,8 @@ const styles = StyleSheet.create({
         flex: 1,
         marginRight: 10,
         fontSize: 16,
+        fontWeight: 'bold', // Gør teksten fed
+        color: '#0A84FF', // Sætter teksten til sort
     },
     selectButton: {
         backgroundColor: '#0A84FF',
@@ -208,8 +244,8 @@ const styles = StyleSheet.create({
         color: '#FFF',
     },
     selectedValueText: {
-        fontWeight: 'bold',
-        color: 'black',
+        fontWeight: 'bold', // Gør teksten fed
+        color: 'black', // Sætter teksten til sort
     },
     inputContainer: {
         flexDirection: 'row',
@@ -218,7 +254,7 @@ const styles = StyleSheet.create({
     },
     input: {
         flex: 1,
-        borderColor: '#0A84FF',
+        borderColor: 'black',
         borderWidth: 1,
         borderRadius: 10,
         padding: 10,
@@ -228,26 +264,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#0A84FF',
         padding: 10,
         borderRadius: 5,
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    prevButton: {
-        backgroundColor: '#0A84FF',
-        borderRadius: 50,
-        height: 50,
-        width: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    nextButton: {
-        backgroundColor: '#0A84FF',
-        borderRadius: 50,
-        height: 50,
-        width: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
     },
     modalView: {
         position: 'absolute',
@@ -270,6 +286,37 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginTop: 10,
     },
+    sliderContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 20,
+    },
+    wageText: { // Ny style for teksten under slideren
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: 'black',
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    prevButton: {
+        backgroundColor: '#0A84FF',
+        borderRadius: 50,
+        height: 50,
+        width: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    nextButton: {
+        backgroundColor: '#0A84FF',
+        borderRadius: 50,
+        height: 50,
+        width: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    // Yderligere styles for dine inputfelter, knapper, modaler osv.
 });
 
 export default ExperienceScreen;

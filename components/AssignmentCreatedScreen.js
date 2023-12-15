@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -7,27 +7,33 @@ const AssignmentCreatedScreen = () => {
     const navigation = useNavigation();
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Spitzenklasse</Text>
-            <Text style={styles.text}>
-                Thanks for creating an assignment. In the next 24 hours you will receive recommended CV's
-            </Text>
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.prevButton} onPress={() => navigation.navigate('AssignmentDescriptions')}>
-                    <Icon name="arrow-back" size={24} color="#FFF" />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.nextButton} onPress={() => navigation.navigate('CvListe')}>
-                    <Icon name="list" size={24} color="#FFF" />
-                </TouchableOpacity>
+        <ImageBackground source={require('../assets/inno.png')} style={styles.backgroundImage}>
+            <View style={styles.container}>
+                <Text style={styles.header}>Spitzenklasse</Text>
+                <Text style={styles.text}>
+                    Thanks for creating an assignment. In the next 24 hours you will receive recommended CV's
+                </Text>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.prevButton} onPress={() => navigation.navigate('AssignmentDescriptions')}>
+                        <Icon name="arrow-back" size={24} color="#FFF" />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.nextButton} onPress={() => navigation.navigate('CvListe')}>
+                        <Icon name="list" size={24} color="#FFF" />
+                    </TouchableOpacity>
+                </View>
             </View>
-        </View>
+        </ImageBackground>
     );
 };
 
 const styles = StyleSheet.create({
+    backgroundImage: {
+        flex: 1,
+        resizeMode: 'cover',
+    },
     container: {
         flex: 1,
-        backgroundColor: '#E8F0FE',
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
