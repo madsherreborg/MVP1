@@ -11,7 +11,7 @@ import AssignmentDescriptionsScreen from './components/AssignmentDescriptionsScr
 import CvListeScreen from './components/CvListeScreen'; // Importér CvListeScreen
 import CvShowScreen from './components/CvShowScreen'; // Husk at importere CvShowScreen
 import ContactScreen from './components/ContactScreen'; // Husk at importere ContactScreen
-
+import CompareScreen from './components/compare';
 // Erstat med din egen Firebase-konfiguration
 const firebaseConfig = {
   apiKey: "AIzaSyApfwVqJhk1Hh436kf8JOKPJSeeqqAtuOk",
@@ -39,8 +39,8 @@ export default function App() {
         <Stack.Screen name="ContactScreen" component={ContactScreen} />
         <Stack.Screen name="CandidateProfile" component={CandidateProfileScreen} />
         <Stack.Screen name="AssignmentCreated" component={AssignmentCreatedScreen} />
+        <Stack.Screen name="Compare" component={CompareScreen} />
         <Stack.Screen name="AssignmentDescriptions" component={AssignmentDescriptionsScreen} />
-        {/* Sørg for der ikke er mellemrum eller linjeskift mellem Screen tags */}
       </Stack.Navigator>
     </NavigationContainer>
   );

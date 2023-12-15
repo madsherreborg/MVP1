@@ -292,9 +292,10 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     wageText: { // Ny style for teksten under slideren
+        backgroundColor: '#0A84FF',
         fontSize: 16,
         fontWeight: 'bold',
-        color: 'black',
+
     },
     buttonContainer: {
         flexDirection: 'row',
