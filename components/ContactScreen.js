@@ -19,7 +19,8 @@ const ContactScreen = ({ route }) => {
     return (
         <ImageBackground source={require('../assets/inno.png')} style={styles.backgroundImage}>
             <ScrollView style={styles.container}>
-                <Text style={styles.header}>{consultant.name}</Text>
+                {/* Updated to display the firm's name instead of the consultant's name */}
+                <Text style={styles.header}>{consultant.company}</Text>
 
                 <ScrollView style={styles.messagesContainer}>
                     {messages.map((msg, index) => (
@@ -35,8 +36,8 @@ const ContactScreen = ({ route }) => {
                         value={message}
                         onChangeText={setMessage}
                         placeholder="Type a message..."
-                        placeholderTextColor="#0A84FF" // Blå farve til placeholder
-                        selectionColor="#0A84FF" // Blå farve til tekstmarkøren og valg
+                        placeholderTextColor="#0A84FF"
+                        selectionColor="#0A84FF"
                     />
                     <TouchableOpacity onPress={sendMessage}>
                         <Icon name="send" size={24} color="#0A84FF" />
@@ -46,6 +47,7 @@ const ContactScreen = ({ route }) => {
         </ImageBackground>
     );
 };
+
 const styles = StyleSheet.create({
     backgroundImage: {
         flex: 1,

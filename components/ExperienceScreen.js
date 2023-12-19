@@ -13,11 +13,12 @@ const ExperienceScreen = () => {
     const [demographyAndExperience, setDemographyAndExperience] = useState({
         contractStart: '',
         contractEnd: '',
-        location: '',
+        Adresse: '',
         language: '',
         educationLevel: '',
         experience: '',
-        wageRange: [100, 3000], // Tilføjet wageRange til state
+        wageRange: [100, 1000],
+        urgency: '', // Tilføjet urgency til state
     });
 
     const [currentField, setCurrentField] = useState('');
@@ -25,6 +26,7 @@ const ExperienceScreen = () => {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showEducationPicker, setShowEducationPicker] = useState(false);
     const [showExperiencePicker, setShowExperiencePicker] = useState(false);
+    const [showUrgencyPicker, setShowUrgencyPicker] = useState(false); // Tilføjet for urgency
 
     useEffect(() => {
         if (route.params?.projectName) {
@@ -42,6 +44,9 @@ const ExperienceScreen = () => {
         } else if (field === 'experience') {
             setShowExperiencePicker(true);
             setInputValue(demographyAndExperience.experience);
+        } else if (field === 'urgency') {
+            setShowUrgencyPicker(true); // Viser urgency picker
+            setInputValue(demographyAndExperience.urgency);
         } else {
             setInputValue(demographyAndExperience[field]);
         }
@@ -54,6 +59,7 @@ const ExperienceScreen = () => {
         setShowDatePicker(false);
         setShowEducationPicker(false);
         setShowExperiencePicker(false);
+        setShowUrgencyPicker(false); // Lukker urgency picker
     };
 
     const onDateChange = (event, selectedDate) => {
@@ -80,6 +86,7 @@ const ExperienceScreen = () => {
                 <Text style={styles.header}>Spitzenklasse</Text>
                 <Text style={styles.subHeader}>Demography & Experience</Text>
 
+                {/* Input og Opdateringsknap */}
                 {currentField !== '' && currentField !== 'contractStart' && currentField !== 'contractEnd' && (
                     <View style={styles.inputContainer}>
                         <TextInput
@@ -94,6 +101,7 @@ const ExperienceScreen = () => {
                     </View>
                 )}
 
+                {/* DatePicker */}
                 {showDatePicker && (
                     <DateTimePicker
                         testID="dateTimePicker"
@@ -104,6 +112,7 @@ const ExperienceScreen = () => {
                     />
                 )}
 
+                {/* Liste af felter */}
                 <View style={styles.listContainer}>
                     {Object.entries(demographyAndExperience).map(([key, value], index) => (
                         <View key={key} style={styles.listItem}>
@@ -120,6 +129,7 @@ const ExperienceScreen = () => {
                     ))}
                 </View>
 
+                {/* Education Picker */}
                 {showEducationPicker && (
                     <Modal
                         animationType="slide"
@@ -142,6 +152,7 @@ const ExperienceScreen = () => {
                     </Modal>
                 )}
 
+                {/* Experience Picker */}
                 {showExperiencePicker && (
                     <Modal
                         animationType="slide"
@@ -166,7 +177,30 @@ const ExperienceScreen = () => {
                     </Modal>
                 )}
 
-                {/* MultiSlider Integration */}
+                {/* Urgency Picker */}
+                {showUrgencyPicker && (
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={showUrgencyPicker}
+                        onRequestClose={() => setShowUrgencyPicker(false)}>
+                        <View style={styles.modalView}>
+                            <Picker
+                                selectedValue={inputValue}
+                                onValueChange={(itemValue) => setInputValue(itemValue)}
+                                style={styles.picker}>
+                                <Picker.Item label="Low (10 days)" value="Low" />
+                                <Picker.Item label="Medium (5 days)" value="Medium" />
+                                <Picker.Item label="High (24 hours)" value="High" />
+                            </Picker>
+                            <TouchableOpacity style={styles.okButton} onPress={handleUpdate}>
+                                <Text style={styles.buttonText}>OK</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </Modal>
+                )}
+
+                {/* Lønområde MultiSlider */}
                 <View style={styles.sliderContainer}>
                     <Text style={styles.subHeader}>Wage/hour</Text>
                     <MultiSlider
@@ -178,13 +212,9 @@ const ExperienceScreen = () => {
                         step={1}
                     />
                     <Text>Wage Range: {demographyAndExperience.wageRange[0]} - {demographyAndExperience.wageRange[1]} kr/hr</Text>
-
-
-
                 </View>
 
-
-                {/* Next og Prev Buttons */}
+                {/* Næste og Forrige knapper */}
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.prevButton} onPress={() => navigation.goBack()}>
                         <Icon name="arrow-back" size={24} color="#FFF" />
@@ -292,10 +322,9 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     wageText: { // Ny style for teksten under slideren
-        backgroundColor: '#0A84FF',
         fontSize: 16,
         fontWeight: 'bold',
-
+        color: 'black',
     },
     buttonContainer: {
         flexDirection: 'row',

@@ -12,6 +12,9 @@ import CvListeScreen from './components/CvListeScreen'; // Importér CvListeScre
 import CvShowScreen from './components/CvShowScreen'; // Husk at importere CvShowScreen
 import ContactScreen from './components/ContactScreen'; // Husk at importere ContactScreen
 import CompareScreen from './components/compare';
+import ProfileDetailsScreen from './components/ProfileDetailsScreen'; // Husk at importere ProfileDetailsScreen
+import SkillsDetailsScreen from './components/SkillsDetailsScreen'; // Adjust path as necessary
+
 // Erstat med din egen Firebase-konfiguration
 const firebaseConfig = {
   apiKey: "AIzaSyApfwVqJhk1Hh436kf8JOKPJSeeqqAtuOk",
@@ -37,6 +40,8 @@ export default function App() {
         <Stack.Screen name="Skills" component={SkillsScreen} />
         <Stack.Screen name="CvListe" component={CvListeScreen} />
         <Stack.Screen name="ContactScreen" component={ContactScreen} />
+        <Stack.Screen name="ProfileDetails" component={ProfileDetailsScreen} />
+        <Stack.Screen name="SkillsDetails" component={SkillsDetailsScreen} />
         <Stack.Screen name="CandidateProfile" component={CandidateProfileScreen} />
         <Stack.Screen name="AssignmentCreated" component={AssignmentCreatedScreen} />
         <Stack.Screen name="Compare" component={CompareScreen} />

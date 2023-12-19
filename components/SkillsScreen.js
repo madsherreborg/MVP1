@@ -1,26 +1,25 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ImageBackground } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ImageBackground, Modal } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Picker } from '@react-native-picker/picker';
+
 const SkillsScreen = () => {
     const navigation = useNavigation();
     const route = useRoute();
     const combinedData = route.params.combinedData;
 
-    const [mustHaveSkills, setMustHaveSkills] = useState(Array(5).fill(''));
-    const [niceToHaveSkills, setNiceToHaveSkills] = useState(Array(5).fill(''));
+    const [mustHaveSkills, setMustHaveSkills] = useState(Array(3).fill(''));
+    const [niceToHaveSkills, setNiceToHaveSkills] = useState(Array(3).fill(''));
     const [selectedSkillIndex, setSelectedSkillIndex] = useState(null);
     const [selectedSkillType, setSelectedSkillType] = useState('');
     const [isPickerVisible, setIsPickerVisible] = useState(false);
+    const [category, setCategory] = useState('');
+    const [isCategoryPickerVisible, setIsCategoryPickerVisible] = useState(false);
 
-    const itSkillsOptions = [
-        "JavaScript", "Python", "Java", "C#", "C++", "PHP"
-    ];
-
-    const industryKnowledgeOptions = [
-        "Ledelse", "Marketing", "Finans", "Salg", "Teknologi"
-    ];
+    const itSkillsOptions = ["JavaScript", "Python", "Java", "C#", "C++", "PHP"];
+    const industryKnowledgeOptions = ["Biotech/Medtech", "Bygge- og Anlæg", "Design og Møbelindustri", "Energi", "IT & Kommunikation", "Landbrug", "Maritin", "Transport", "Logistik", "Finansielle Sektor"];
+    const categoryOptions = ["Cloud Computing", "Business Intelligence", "Salesforce Cloud", "Cyber Security", "Coding", "Software Development", "UI/UX Design", "Data Management"];
 
     const handleSelectSkill = (index, type) => {
         setSelectedSkillIndex(index);
@@ -40,6 +39,7 @@ const SkillsScreen = () => {
     const handleNext = () => {
         const fullData = {
             ...combinedData,
+            category,
             skills: {
                 mustHaveSkills,
                 niceToHaveSkills
@@ -52,6 +52,34 @@ const SkillsScreen = () => {
         <ImageBackground source={require('../assets/inno.png')} style={styles.backgroundImage}>
             <ScrollView style={styles.container}>
                 <Text style={styles.header}>Spitzenklasse</Text>
+
+                <TouchableOpacity style={styles.selectButton} onPress={() => setIsCategoryPickerVisible(true)}>
+                    <Text style={styles.selectButtonText}>{category || "Select Category"}</Text>
+                    <Icon name="keyboard-arrow-down" size={20} color="#0A84FF" style={styles.selectButtonIcon} />
+                </TouchableOpacity>
+
+
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={isCategoryPickerVisible}
+                    onRequestClose={() => setIsCategoryPickerVisible(false)}>
+                    <View style={styles.modalContainer}>
+                        <View style={styles.pickerContainer}>
+                            <Picker
+                                selectedValue={category}
+                                onValueChange={(itemValue) => setCategory(itemValue)}
+                                style={{ width: '100%' }}>
+                                {categoryOptions.map((option, idx) => (
+                                    <Picker.Item key={idx} label={option} value={option} />
+                                ))}
+                            </Picker>
+                            <TouchableOpacity style={styles.doneButton} onPress={() => setIsCategoryPickerVisible(false)}>
+                                <Text style={styles.doneButtonText}>Done</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
 
                 <Text style={styles.subHeaderBold}>Must have skills prioritized</Text>
                 {mustHaveSkills.map((skill, index) => (
@@ -101,7 +129,6 @@ const SkillsScreen = () => {
     );
 };
 
-
 const styles = StyleSheet.create({
     backgroundImage: {
         flex: 1,
@@ -119,11 +146,66 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         textAlign: 'center',
     },
+    selectButton: {
+        height: 40,
+        backgroundColor: '#FFF',
+        borderColor: '#0A84FF',
+        borderWidth: 1,
+        borderRadius: 10,
+        marginBottom: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        paddingHorizontal: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    selectButtonText: {
+        fontSize: 16,
+        color: '#0A84FF',
+        marginRight: 200, // Tilføj margin til højre for at skabe afstand mellem tekst og ikon
+    },
+    selectButtonIcon: {
+        // Yderligere styling for ikonet, hvis nødvendigt
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    pickerContainer: {
+        backgroundColor: 'white',
+        width: '80%',
+        borderRadius: 10,
+        padding: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    doneButton: {
+        backgroundColor: '#0A84FF',
+        borderRadius: 10,
+        padding: 10,
+        elevation: 2,
+        marginTop: 10,
+    },
+    doneButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
     subHeaderBold: {
         fontSize: 20,
         fontWeight: 'bold',
         color: '#0A84FF',
         marginBottom: 10,
+        textAlign: 'center', // Tilføj denne linje for at centrere teksten
     },
     listItem: {
         flexDirection: 'row',
@@ -172,6 +254,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    // Eventuelle yderligere styles kan tilføjes her
 });
 
 export default SkillsScreen;

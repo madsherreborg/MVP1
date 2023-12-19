@@ -5,20 +5,19 @@ import { useNavigation } from '@react-navigation/native';
 const CvListeScreen = () => {
     const navigation = useNavigation();
     const consultants = [
-        { company: 'Mckinsey', name: 'Rasmus', status: 'Open', contact: 'Contact', percentage: 90 },
-        { company: 'IBM', name: 'Peter', status: 'Open', contact: 'Contact', percentage: 85 },
-        { company: 'Rambøll', name: 'Casper', status: 'Open', contact: 'Contact', percentage: 83 },
-        { company: 'Deloitte', name: 'Krog', status: 'Open', contact: 'Contact', percentage: 78 },
-        { company: 'PWC', name: 'Zultan', status: 'Open', contact: 'Contact', percentage: 75 },
-        { company: 'KMD', name: 'Gabriella', status: 'Open', contact: 'Contact', percentage: 69 },
-        { company: 'CGI', name: 'George', status: 'Open', contact: 'Contact', percentage: 65 },
-        // Tilføj flere konsulenter efter behov
+        { company: 'Mckinsey', status: 'Open', contact: 'Contact', percentage: 90, skills: '80%' },
+        { company: 'IBM', status: 'Open', contact: 'Contact', percentage: 85, skills: '75%' },
+        { company: 'Rambøll', status: 'Open', contact: 'Contact', percentage: 83, skills: '70%' },
+        { company: 'Deloitte', status: 'Open', contact: 'Contact', percentage: 78, skills: '65%' },
+        { company: 'PWC', status: 'Open', contact: 'Contact', percentage: 75, skills: '60%' },
+        { company: 'KMD', status: 'Open', contact: 'Contact', percentage: 69, skills: '55%' },
+        { company: 'CGI', status: 'Open', contact: 'Contact', percentage: 65, skills: '50%' },
+        // Add more consultants as needed
     ];
 
-    // Bestem farve baseret på procenttal
-    const getPercentageColor = (percentage) => {
-        if (percentage > 80) return 'green';
-        if (percentage >= 50) return 'yellow';
+    const getSkillsColor = (percentage) => {
+        if (percentage > 70) return 'green';
+        if (percentage > 40) return 'yellow';
         return 'red';
     };
 
@@ -35,16 +34,9 @@ const CvListeScreen = () => {
                     </View>
 
                     <View style={styles.column}>
-                        <Text style={styles.columnHeader}>Name</Text>
+                        <Text style={styles.columnHeader}>CV</Text>
                         {consultants.map((item, index) => (
-                            <Text key={`name-${index}`} style={styles.cell}>{item.name}</Text>
-                        ))}
-                    </View>
-
-                    <View style={styles.column}>
-                        <Text style={styles.columnHeader}>Open</Text>
-                        {consultants.map((item, index) => (
-                            <TouchableOpacity key={`open-${index}`} onPress={() => navigation.navigate('CvShow', { consultant: item })}>
+                            <TouchableOpacity key={`cv-${index}`} onPress={() => navigation.navigate('CvShow', { consultant: item })}>
                                 <Text style={styles.cellAction}>{item.status}</Text>
                             </TouchableOpacity>
                         ))}
@@ -60,19 +52,34 @@ const CvListeScreen = () => {
                     </View>
 
                     <View style={styles.column}>
-                        <Text style={styles.columnHeader}>Match</Text>
+                        <Text style={styles.columnHeader}>Profile</Text>
                         {consultants.map((item, index) => (
-                            <Text key={`percentage-${index}`} style={[styles.cell, { color: getPercentageColor(item.percentage) }]}>
-                                {`${item.percentage}%`}
-                            </Text>
+                            <TouchableOpacity
+                                key={`profile-${index}`}
+                                onPress={() => navigation.navigate('ProfileDetails', { percentage: item.percentage })}
+                            >
+                                <Text style={[styles.cell, { color: getSkillsColor(parseInt(item.percentage)) }]}>
+                                    {`${item.percentage}%`}
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+
+                    <View style={styles.column}>
+                        <Text style={styles.columnHeader}>Skills</Text>
+                        {consultants.map((item, index) => (
+                            <TouchableOpacity
+                                key={`skills-${index}`}
+                                onPress={() => navigation.navigate('SkillsDetails', { skills: item.skills })}
+                            >
+                                <Text style={[styles.cell, { color: getSkillsColor(parseInt(item.skills.replace('%', ''))) }]}>
+                                    {item.skills}
+                                </Text>
+                            </TouchableOpacity>
                         ))}
                     </View>
                 </View>
             </ScrollView>
-
-            <TouchableOpacity style={styles.compareButton} onPress={() => navigation.navigate('Compare')}>
-                <Text style={styles.compareButtonText}>Compare</Text>
-            </TouchableOpacity>
         </ImageBackground>
     );
 };
@@ -121,19 +128,7 @@ const styles = StyleSheet.create({
         color: '#0A84FF',
         fontWeight: 'bold',
     },
-    compareButton: {
-        position: 'absolute',
-        right: 20,
-        top: 20,
-        backgroundColor: '#0A84FF',
-        padding: 10,
-        borderRadius: 5,
-        elevation: 3,
-    },
-    compareButtonText: {
-        color: 'white',
-        fontWeight: 'bold',
-    },
+    // Removed styles for compareButton and compareButtonText
 });
 
 export default CvListeScreen;
